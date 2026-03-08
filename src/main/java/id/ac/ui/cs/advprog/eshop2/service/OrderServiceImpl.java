@@ -5,27 +5,40 @@ import id.ac.ui.cs.advprog.eshop2.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class OrderServiceImpl implements OrderService{
     @Autowired
     private OrderRepository orderRepository;
     @Override
     public Order createOrder(Order order) {
+        if (orderRepository.findById(order.getId()) == null){
+            orderRepository.save(order);
+            return order;
+        }
         return null;
     }
 
     @Override
     public Order updateStatus(String orderId, String status) {
-        return null;
+        Order order = orderRepository.findById(orderId);
+        if (order != null){
+            Order newOrder = new Order(order.getId(), order.getProducts(),
+                    order.getOrderTime(), order.getAuthor(), status);
+            orderRepository.save(order);
+            return newOrder;
+        } else {
+            throw new NoSuchElementException();
+        }
     }
 
     @Override
     public Order findById(String orderId) {
-        return null;
+        return orderRepository.findById(orderId);
     }
 
     @Override
     public List<Order> findAllByAuthor(String author) {
-        return List.of();
+        return orderRepository.findAllByAuthor(author);
     }
 }
