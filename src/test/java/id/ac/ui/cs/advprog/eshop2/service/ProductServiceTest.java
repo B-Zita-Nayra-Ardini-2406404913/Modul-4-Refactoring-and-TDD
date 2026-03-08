@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.eshop2.service;
 
-import id.ac.ui.cs.advprog.eshop.model.Product;
-import id.ac.ui.cs.advprog.eshop.repository.InMemoryProductRepository;
+import id.ac.ui.cs.advprog.eshop2.model.Product;
+import id.ac.ui.cs.advprog.eshop2.repository.InMemoryProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
