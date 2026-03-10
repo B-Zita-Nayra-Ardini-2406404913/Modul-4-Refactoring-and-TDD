@@ -1,0 +1,7 @@
+package id.ac.ui.cs.advprog.eshop2.exception;
+
+public class ProductNotFoundException extends RuntimeException {
+    public ProductNotFoundException(String productId) {
+        super("Product with ID " + productId + " not found");
+    }
+}

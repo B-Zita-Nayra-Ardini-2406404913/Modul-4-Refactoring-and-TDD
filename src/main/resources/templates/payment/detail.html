@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8; --border-focus: #2D5BE3;
+            --text-primary: #1A1915; --text-secondary: #6B6860;
+            --accent: #2D5BE3; --accent-hover: #1E45C8;
+            --success-bg: #EDFAF3; --success-text: #1A7A48;
+            --danger-bg: #FDECEA; --danger-text: #C0392B;
+            --warning-bg: #FEF6E4; --warning-text: #8A6100;
+            --neutral-bg: #EDEDEB; --neutral-text: #5C5A55;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; padding: 48px 24px; }
+        .container { max-width: 480px; margin: 0 auto; }
+        .page-title { font-family: 'Syne', sans-serif; font-size: 26px; letter-spacing: -0.4px; margin-bottom: 28px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.02em; }
+        input[type="text"] { width: 100%; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+        input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(45,91,227,0.1); background: #fff; }
+        input::placeholder { color: #B5B3AC; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: background 0.15s, transform 0.1s; width: 100%; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .result-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+        .result-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .result-row:last-child { border-bottom: none; }
+        .result-label { color: var(--text-secondary); font-size: 13px; }
+        .result-value { font-weight: 500; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-success  { background: var(--success-bg);  color: var(--success-text); }
+        .badge-rejected { background: var(--danger-bg);   color: var(--danger-text); }
+        .badge-pending  { background: var(--warning-bg);  color: var(--warning-text); }
+        .badge-default  { background: var(--neutral-bg);  color: var(--neutral-text); }
+        .section-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="page-title">Payment Detail</h1>
+
+    <div class="card">
+        <div class="card">
+            <div class="form-group">
+                <label for="paymentIdInput">Payment ID</label>
+                <input type="text" id="paymentIdInput" placeholder="Enter payment ID">
+            </div>
+            <button class="btn btn-primary" onclick="searchPayment()">Search</button>
+        </div>
+
+        <script>
+            function searchPayment() {
+                const id = document.getElementById('paymentIdInput').value.trim();
+                if (id) {
+                    window.location.href = '/payment/detail/' + id;
+                }
+            }
+        </script>
+    </div>
+
+    <div th:if="${payment}">
+        <p class="section-title">Result</p>
+        <div class="result-card">
+            <div class="result-row">
+                <span class="result-label">Payment ID</span>
+                <span class="result-value" th:text="${payment.paymentId}"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Method</span>
+                <span class="result-value" th:text="${payment.method}"></span>
+            </div>
+            <div class="result-row">
+                <span class="result-label">Status</span>
+                <span class="badge"
+                      th:classappend="${payment.status == 'SUCCESS'} ? 'badge-success' : (${payment.status == 'REJECTED'} ? 'badge-rejected' : (${payment.status == 'PENDING'} ? 'badge-pending' : 'badge-default'))"
+                      th:text="${payment.status}"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

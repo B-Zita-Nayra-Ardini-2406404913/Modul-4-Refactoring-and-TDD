@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Order</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #F7F6F2;
+            --surface: #FFFFFF;
+            --border: #E2E0D8;
+            --border-focus: #2D5BE3;
+            --text-primary: #1A1915;
+            --text-secondary: #6B6860;
+            --accent: #2D5BE3;
+            --accent-hover: #1E45C8;
+            --secondary: #E8E7E1;
+            --secondary-hover: #DDDCD6;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 48px 24px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 24px;
+            transition: color 0.15s;
+        }
+
+        .back-link:hover { color: var(--text-primary); }
+
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            color: var(--text-primary);
+            letter-spacing: -0.4px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(45, 91, 227, 0.1);
+            background: #fff;
+        }
+
+        input::placeholder { color: #B5B3AC; }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s, transform 0.1s;
+            flex: 1;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover { background: var(--secondary-hover); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <a href="#" class="back-link">← Back</a>
+    <h1 class="page-title">Create Order</h1>
+
+    <div class="card">
+        <form th:action="@{/order/create}" method="post">
+            <div class="form-group">
+                <label for="authorInput">Author</label>
+                <input type="text" name="author" id="authorInput" placeholder="Enter author name">
+            </div>
+            <div class="form-group">
+                <label>Select Products</label>
+                <div th:each="product : ${products}" style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <input type="checkbox"
+                           th:value="${product.productId}"
+                           name="productIds"
+                           th:id="${product.productId}">
+                    <label th:for="${product.productId}"
+                           th:text="${product.productName + ' (qty: ' + product.productQuantity + ')'}">
+                    </label>
+                </div>
+            </div>
+            <div class="form-actions">
+                <a th:href="@{/order/history}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Create Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

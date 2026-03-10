@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Payments</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8;
+            --text-primary: #1A1915; --text-secondary: #6B6860;
+            --accent: #2D5BE3; --accent-hover: #1E45C8;
+            --row-hover: #F0EFE9;
+            --success-bg: #EDFAF3; --success-text: #1A7A48;
+            --danger-bg: #FDECEA; --danger-text: #C0392B;
+            --warning-bg: #FEF6E4; --warning-text: #8A6100;
+            --neutral-bg: #EDEDEB; --neutral-text: #5C5A55;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; padding: 48px 24px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .page-title { font-family: 'Syne', sans-serif; font-size: 28px; letter-spacing: -0.5px; margin-bottom: 28px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); }
+        table { width: 100%; border-collapse: collapse; }
+        thead th { background: var(--bg); padding: 12px 20px; text-align: left; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--row-hover); }
+        tbody td { padding: 14px 20px; font-size: 14px; vertical-align: middle; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-success  { background: var(--success-bg);  color: var(--success-text); }
+        .badge-rejected { background: var(--danger-bg);   color: var(--danger-text); }
+        .badge-pending  { background: var(--warning-bg);  color: var(--warning-text); }
+        .badge-default  { background: var(--neutral-bg);  color: var(--neutral-text); }
+        .btn { display: inline-flex; align-items: center; padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: background 0.15s; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .empty-state { padding: 48px 20px; text-align: center; color: var(--text-secondary); font-size: 14px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 class="page-title">All Payments</h1>
+    <div class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th style="text-align:right;">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="payment : ${payments}">
+                <td th:text="${payment.paymentId}"></td>
+                <td th:text="${payment.method}"></td>
+                <td>
+                        <span class="badge"
+                              th:classappend="${payment.status == 'SUCCESS'} ? 'badge-success' : (${payment.status == 'REJECTED'} ? 'badge-rejected' : (${payment.status == 'PENDING'} ? 'badge-pending' : 'badge-default'))"
+                              th:text="${payment.status}"></span>
+                </td>
+                <td style="text-align:right;">
+                    <a th:href="@{/payment/admin/detail/{id}(id=${payment.paymentId})}" class="btn btn-primary">Detail</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(payments)}">
+                <td colspan="4" class="empty-state">No payments found.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>
