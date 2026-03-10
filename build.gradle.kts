@@ -54,6 +54,7 @@ dependencies {
     testImplementation("io.github.bonigarcia:webdrivermanager:$webdriverManagerVersion")
     testImplementation("org.junit.jupiter:junit-jupiter:${junitJupiterVersion}")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.register<Test>("unitTest") {

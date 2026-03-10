@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #F7F6F2;
+            --surface: #FFFFFF;
+            --border: #E2E0D8;
+            --border-focus: #2D5BE3;
+            --text-primary: #1A1915;
+            --text-secondary: #6B6860;
+            --accent: #2D5BE3;
+            --accent-hover: #1E45C8;
+            --secondary: #E8E7E1;
+            --row-hover: #F0EFE9;
+            --success-bg: #EDFAF3;
+            --success-text: #1A7A48;
+            --warning-bg: #FEF6E4;
+            --warning-text: #8A6100;
+            --neutral-bg: #EDEDEB;
+            --neutral-text: #5C5A55;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 48px 24px;
+        }
+
+        .container {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 24px;
+        }
+
+        /* Search card */
+        .search-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            margin-bottom: 28px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(45, 91, 227, 0.1);
+            background: #fff;
+        }
+
+        input::placeholder { color: #B5B3AC; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s, transform 0.1s;
+            white-space: nowrap;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover { background: var(--accent-hover); }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 13px;
+        }
+
+        /* Results table */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: var(--bg);
+            padding: 12px 20px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.12s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--row-hover); }
+
+        tbody td {
+            padding: 14px 20px;
+            font-size: 14px;
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-paid    { background: var(--success-bg); color: var(--success-text); }
+        .badge-pending { background: var(--warning-bg); color: var(--warning-text); }
+        .badge-default { background: var(--neutral-bg); color: var(--neutral-text); }
+
+        .empty-state {
+            padding: 48px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="page-title">Order History</h1>
+
+    <div class="search-card">
+        <form th:action="@{/order/history}" method="post">
+            <div class="search-row">
+                <div class="form-group">
+                    <label for="authorInput">Author Name</label>
+                    <input type="text" name="author" id="authorInput" placeholder="Enter author name">
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+
+    <div th:if="${orders}" class="card">
+        <table>
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th style="text-align:right;">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="order : ${orders}">
+                <td th:text="${order.id}"></td>
+                <td th:text="${order.author}"></td>
+                <td>
+                        <span th:classappend="${order.status == 'PAID'} ? 'badge-paid' : (${order.status == 'PENDING'} ? 'badge-pending' : 'badge-default')"
+                              class="badge"
+                              th:text="${order.status}"></span>
+                </td>
+                <td style="text-align:right;">
+                    <a th:href="@{/order/pay/{id}(id=${order.id})}" class="btn btn-primary btn-sm">Pay</a>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(orders)}">
+                <td colspan="4" class="empty-state">No orders found for this author.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>
