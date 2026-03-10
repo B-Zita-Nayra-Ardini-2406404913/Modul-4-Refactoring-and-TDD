@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Result</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8;
+            --text-primary: #1A1915; --text-secondary: #6B6860;
+            --accent: #2D5BE3; --accent-hover: #1E45C8;
+            --success-bg: #EDFAF3; --success-text: #1A7A48;
+            --danger-bg: #FDECEA; --danger-text: #C0392B;
+            --warning-bg: #FEF6E4; --warning-text: #8A6100;
+            --neutral-bg: #EDEDEB; --neutral-text: #5C5A55;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 48px 24px; }
+        .container { width: 100%; max-width: 420px; text-align: center; }
+        .icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 26px; }
+        .icon-success { background: var(--success-bg); }
+        .icon-rejected { background: var(--danger-bg); }
+        .icon-default { background: var(--neutral-bg); }
+        .page-title { font-family: 'Syne', sans-serif; font-size: 26px; letter-spacing: -0.4px; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 24px; text-align: left; }
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 14px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { color: var(--text-secondary); font-size: 13px; }
+        .info-value { font-weight: 500; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+        .badge-success  { background: var(--success-bg);  color: var(--success-text); }
+        .badge-rejected { background: var(--danger-bg);   color: var(--danger-text); }
+        .badge-pending  { background: var(--warning-bg);  color: var(--warning-text); }
+        .badge-default  { background: var(--neutral-bg);  color: var(--neutral-text); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 11px 24px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: background 0.15s; width: 100%; }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon"
+         th:classappend="${payment.status == 'SUCCESS'} ? 'icon-success' : (${payment.status == 'REJECTED'} ? 'icon-rejected' : 'icon-default')">
+        <span th:if="${payment.status == 'SUCCESS'}">✓</span>
+        <span th:if="${payment.status == 'REJECTED'}">✕</span>
+        <span th:unless="${payment.status == 'SUCCESS' or payment.status == 'REJECTED'}">⏳</span>
+    </div>
+
+    <h1 class="page-title">Payment Submitted</h1>
+    <p class="subtitle">Your payment has been received and is being processed.</p>
+
+    <div class="card">
+        <div class="info-row">
+            <span class="info-label">Payment ID</span>
+            <span class="info-value" th:text="${payment.paymentId}"></span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Status</span>
+            <span class="badge"
+                  th:classappend="${payment.status == 'SUCCESS'} ? 'badge-success' : (${payment.status == 'REJECTED'} ? 'badge-rejected' : (${payment.status == 'PENDING'} ? 'badge-pending' : 'badge-default'))"
+                  th:text="${payment.status}"></span>
+        </div>
+    </div>
+
+    <a th:href="@{/order/history}" class="btn btn-primary">Back to Order History</a>
+</div>
+</body>
+</html>

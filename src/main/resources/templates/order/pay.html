@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Order</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Syne:wght@700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --bg: #F7F6F2; --surface: #FFFFFF; --border: #E2E0D8; --border-focus: #2D5BE3;
+            --text-primary: #1A1915; --text-secondary: #6B6860;
+            --accent: #2D5BE3; --accent-hover: #1E45C8;
+            --secondary: #E8E7E1; --secondary-hover: #DDDCD6;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; padding: 48px 24px; }
+        .container { max-width: 480px; margin: 0 auto; }
+        .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); text-decoration: none; margin-bottom: 24px; transition: color 0.15s; }
+        .back-link:hover { color: var(--text-primary); }
+        .page-title { font-family: 'Syne', sans-serif; font-size: 26px; letter-spacing: -0.4px; margin-bottom: 6px; }
+        .order-id-tag { font-size: 13px; color: var(--text-secondary); margin-bottom: 28px; }
+        .order-id-tag span { font-weight: 600; color: var(--text-primary); }
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; box-shadow: var(--shadow); }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.02em; }
+        input[type="text"] { width: 100%; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+        input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(45,91,227,0.1); background: #fff; }
+        input::placeholder { color: #B5B3AC; }
+        select { width: 100%; padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-primary); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; outline: none; cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6860' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+        select:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(45,91,227,0.1); background-color: #fff; }
+        .divider { height: 1px; background: var(--border); margin: 24px 0; }
+        .section-title { font-size: 12px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 16px; }
+        .form-actions { display: flex; gap: 10px; margin-top: 28px; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; border-radius: 8px; border: none; cursor: pointer; text-decoration: none; transition: background 0.15s, transform 0.1s; flex: 1; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--secondary); color: var(--text-primary); }
+        .btn-secondary:hover { background: var(--secondary-hover); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a th:href="@{/order/history}" class="back-link">← Back to history</a>
+    <h1 class="page-title">Pay Order</h1>
+    <p class="order-id-tag">Order ID: <span th:text="${order.id}"></span></p>
+
+    <div class="card">
+        <form th:action="@{/order/pay/{orderId}(orderId=${order.id})}" method="post">
+
+            <div class="form-group">
+                <label for="methodSelect">Payment Method</label>
+                <select name="method" id="methodSelect">
+                    <option value="VOUCHER">Voucher</option>
+                    <option value="CASH_ON_DELIVERY">Cash on Delivery</option>
+                </select>
+            </div>
+
+            <div class="divider"></div>
+            <p class="section-title">Voucher</p>
+
+            <div class="form-group">
+                <label for="voucherCode">Voucher Code</label>
+                <input type="text" name="voucherCode" id="voucherCode" placeholder="Enter voucher code">
+            </div>
+
+            <div class="divider"></div>
+            <p class="section-title">Cash on Delivery</p>
+
+            <div class="form-group">
+                <label for="address">Delivery Address</label>
+                <input type="text" name="address" id="address" placeholder="Enter delivery address">
+            </div>
+            <div class="form-group">
+                <label for="deliveryFee">Delivery Fee</label>
+                <input type="text" name="deliveryFee" id="deliveryFee" placeholder="Enter delivery fee">
+            </div>
+
+            <div class="form-actions">
+                <a th:href="@{/order/history}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Pay Now</button>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
