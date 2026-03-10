@@ -5,6 +5,7 @@ import java.util.Map;
 
 public class Payment {
     String paymentId;
+    private Order order;
     String method;
     String status;
     Map<String, String> paymentData;
@@ -12,8 +13,9 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(String id, String method, Map<String, String> paymentData) {
+    public Payment(String id, Order order, String method, Map<String, String> paymentData) {
         this.paymentId = id;
+        this.order = order;
         this.method = method;
         this.paymentData = paymentData;
         this.status = resolveStatus(method, paymentData);
@@ -62,5 +64,13 @@ public class Payment {
 
     public void setPaymentData(Map<String, String> paymentData) {
         this.paymentData = paymentData;
+    }
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
     }
 }

@@ -20,7 +20,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment addPayment(Order order, String method, Map<String, String> paymentData) {
-        Payment payment = new Payment(UUID.randomUUID().toString(), method, paymentData);
+        Payment payment = new Payment(UUID.randomUUID().toString(), order, method, paymentData);
         paymentRepository.save(payment);
         return payment;
     }
@@ -30,7 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setStatus(status);
 
         if (status.equals(PaymentStatus.SUCCESS.getValue())) {
-            payment.getOrder.setStatus(OrderStatus.SUCCESS.getValue());
+            payment.getOrder().setStatus(OrderStatus.SUCCESS.getValue());
         } else if (status.equals(PaymentStatus.REJECTED.getValue())) {
             payment.getOrder().setStatus(OrderStatus.FAILED.getValue());
         }

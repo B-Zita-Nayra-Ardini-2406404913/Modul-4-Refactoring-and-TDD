@@ -104,7 +104,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentVoucherSuccess() {
         Payment p = new Payment(
-                "id-1", "VOUCHER",
+                "id-1", null, "VOUCHER",
                 new HashMap<String, String>() {{ put("voucherCode", "ESHOP1234ABC5678"); }}
         );
         assertEquals(PaymentStatus.SUCCESS.getValue(), p.getStatus());
@@ -114,7 +114,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentVoucherNullCode() {
         Payment p = new Payment(
-                "id-2", "VOUCHER",
+                "id-2", null, "VOUCHER",
                 new HashMap<String, String>() {{ put("voucherCode", null); }}
         );
         assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
@@ -124,7 +124,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentVoucherWrongLength() {
         Payment p = new Payment(
-                "id-3", "VOUCHER",
+                "id-3", null, "VOUCHER",
                 new HashMap<String, String>() {{ put("voucherCode", "ESHOP123"); }}
         );
         assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
@@ -134,7 +134,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentVoucherNotStartWithESHOP() {
         Payment p = new Payment(
-                "id-4", "VOUCHER",
+                "id-4", null, "VOUCHER",
                 new HashMap<String, String>() {{ put("voucherCode", "TOKO1234ABC5678X"); }}
         );
         assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
@@ -144,7 +144,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentVoucherWrongDigitCount() {
         Payment p = new Payment(
-                "id-5", "VOUCHER",
+                "id-5", null, "VOUCHER",
                 new HashMap<String, String>() {{ put("voucherCode", "ESHOP1234ABCDEFG"); }}
         );
         assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
@@ -154,7 +154,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentRejectedVoucher() {
         Payment payment1 = new Payment(
-                this.payment.getPaymentId(),
+                this.payment.getPaymentId(), null,
                 this.payment.getMethod(),
                 new HashMap<String, String>() {{ put("voucherCode", "ESHOP1234ABC567a"); }}
         );
@@ -165,7 +165,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentCODSuccess() {
         Payment p = new Payment(
-                "id-6", "CASH_ON_DELIVERY",
+                "id-6", null, "CASH_ON_DELIVERY",
                 new HashMap<String, String>() {{
                     put("address", "Jl. Merdeka No. 1");
                     put("deliveryFee", "10000");
@@ -178,7 +178,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentCODAddressNull() {
         Payment p = new Payment(
-                "id-7", "CASH_ON_DELIVERY",
+                "id-7", null, "CASH_ON_DELIVERY",
                 new HashMap<String, String>() {{
                     put("address", null);
                     put("deliveryFee", "10000");
@@ -191,7 +191,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentCODFeeNull() {
         Payment p = new Payment(
-                "id-8", "CASH_ON_DELIVERY",
+                "id-8", null, "CASH_ON_DELIVERY",
                 new HashMap<String, String>() {{
                     put("address", "Jl. Merdeka No. 1");
                     put("deliveryFee", null);
@@ -204,7 +204,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentCODAddressEmpty() {
         Payment p = new Payment(
-                "id-9", "CASH_ON_DELIVERY",
+                "id-9", null, "CASH_ON_DELIVERY",
                 new HashMap<String, String>() {{
                     put("address", "");
                     put("deliveryFee", "10000");
@@ -217,7 +217,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentCODFeeEmpty() {
         Payment p = new Payment(
-                "id-10", "CASH_ON_DELIVERY",
+                "id-10", null, "CASH_ON_DELIVERY",
                 new HashMap<String, String>() {{
                     put("address", "Jl. Merdeka No. 1");
                     put("deliveryFee", "");
@@ -230,7 +230,7 @@ public class PaymentTest {
     @Test
     void testCreatePaymentRejectedCOD() {
         Payment payment1 = new Payment(
-                this.payment.getPaymentId(),
+                this.payment.getPaymentId(), null,
                 "CASH_ON_DELIVERY",
                 new HashMap<String, String>() {{
                     put("address", null);
@@ -243,7 +243,7 @@ public class PaymentTest {
 
     @Test
     void testCreatePaymentUnknownMethodRejected() {
-        Payment p = new Payment("id-11", "UNKNOWN_METHOD", new HashMap<>());
+        Payment p = new Payment("id-11", null, "UNKNOWN_METHOD", new HashMap<>());
         assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
         assertEquals("UNKNOWN_METHOD", p.getMethod());
     }

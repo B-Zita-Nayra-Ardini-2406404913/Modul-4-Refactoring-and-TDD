@@ -22,7 +22,7 @@ public class PaymentCODTest {
     void testCODValidSuccess() {
         paymentData.put("address", "Jl. Merdeka No. 1");
         paymentData.put("deliveryFee", "10000");
-        Payment payment = new Payment("pay-1", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-1", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -31,7 +31,7 @@ public class PaymentCODTest {
     void testCODValidDifferentValues() {
         paymentData.put("address", "Jl. Sudirman No. 99, Jakarta");
         paymentData.put("deliveryFee", "25000");
-        Payment payment = new Payment("pay-2", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-2", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.SUCCESS.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -40,7 +40,7 @@ public class PaymentCODTest {
     void testCODAddressNullRejected() {
         paymentData.put("address", null);
         paymentData.put("deliveryFee", "10000");
-        Payment payment = new Payment("pay-3", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-3", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -49,7 +49,7 @@ public class PaymentCODTest {
     void testCODAddressEmptyRejected() {
         paymentData.put("address", "");
         paymentData.put("deliveryFee", "10000");
-        Payment payment = new Payment("pay-4", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-4", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -57,7 +57,7 @@ public class PaymentCODTest {
     @Test
     void testCODAddressKeyMissingRejected() {
         paymentData.put("deliveryFee", "10000");
-        Payment payment = new Payment("pay-5", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-5", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -66,7 +66,7 @@ public class PaymentCODTest {
     void testCODDeliveryFeeNullRejected() {
         paymentData.put("address", "Jl. Merdeka No. 1");
         paymentData.put("deliveryFee", null);
-        Payment payment = new Payment("pay-6", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-6", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -75,7 +75,7 @@ public class PaymentCODTest {
     void testCODDeliveryFeeEmptyRejected() {
         paymentData.put("address", "Jl. Merdeka No. 1");
         paymentData.put("deliveryFee", "");
-        Payment payment = new Payment("pay-7", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-7", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -83,7 +83,7 @@ public class PaymentCODTest {
     @Test
     void testCODDeliveryFeeKeyMissingRejected() {
         paymentData.put("address", "Jl. Merdeka No. 1");
-        Payment payment = new Payment("pay-8", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-8", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -92,7 +92,7 @@ public class PaymentCODTest {
     void testCODBothNullRejected() {
         paymentData.put("address", null);
         paymentData.put("deliveryFee", null);
-        Payment payment = new Payment("pay-9", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-9", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
@@ -101,14 +101,14 @@ public class PaymentCODTest {
     void testCODBothEmptyRejected() {
         paymentData.put("address", "");
         paymentData.put("deliveryFee", "");
-        Payment payment = new Payment("pay-10", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-10", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }
 
     @Test
     void testCODEmptyMapRejected() {
-        Payment payment = new Payment("pay-11", "CASH_ON_DELIVERY", paymentData);
+        Payment payment = new Payment("pay-11", null, "CASH_ON_DELIVERY", paymentData);
         assertEquals(PaymentStatus.REJECTED.getValue(), payment.getStatus());
         assertEquals("CASH_ON_DELIVERY", payment.getMethod());
     }

@@ -54,8 +54,8 @@ public class PaymentServiceTest {
         codData.put("deliveryFee", "10000");
 
         payments = new ArrayList<>();
-        payments.add(new Payment("pay-1", "VOUCHER", voucherData));
-        payments.add(new Payment("pay-2", "CASH_ON_DELIVERY", codData));
+        payments.add(new Payment("pay-1", null, "VOUCHER", voucherData));
+        payments.add(new Payment("pay-2", null, "CASH_ON_DELIVERY", codData));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class PaymentServiceTest {
     void testAddPaymentVoucherRejected() {
         Map<String, String> invalidData = new HashMap<>();
         invalidData.put("voucherCode", "INVALID");
-        Payment rejected = new Payment("pay-3", "VOUCHER", invalidData);
+        Payment rejected = new Payment("pay-3", null, "VOUCHER", invalidData);
         doReturn(rejected).when(paymentRepository).save(any(Payment.class));
 
         Payment result = paymentService.addPayment(order, "VOUCHER", invalidData);
@@ -100,7 +100,7 @@ public class PaymentServiceTest {
         Map<String, String> invalidData = new HashMap<>();
         invalidData.put("address", null);
         invalidData.put("deliveryFee", null);
-        Payment rejected = new Payment("pay-4", "CASH_ON_DELIVERY", invalidData);
+        Payment rejected = new Payment("pay-4", null, "CASH_ON_DELIVERY", invalidData);
         doReturn(rejected).when(paymentRepository).save(any(Payment.class));
 
         Payment result = paymentService.addPayment(order, "CASH_ON_DELIVERY", invalidData);
@@ -112,6 +112,7 @@ public class PaymentServiceTest {
     @Test
     void testSetStatusSuccessUpdatesOrder() {
         Payment payment = payments.get(0);
+        payment.setOrder(order);
         doReturn(payment).when(paymentRepository).save(any(Payment.class));
 
         Payment result = paymentService.setStatus(payment, PaymentStatus.SUCCESS.getValue());
@@ -124,6 +125,7 @@ public class PaymentServiceTest {
     @Test
     void testSetStatusRejectedUpdatesOrderToFailed() {
         Payment payment = payments.get(0);
+        payment.setOrder(order);
         doReturn(payment).when(paymentRepository).save(any(Payment.class));
 
         Payment result = paymentService.setStatus(payment, PaymentStatus.REJECTED.getValue());
