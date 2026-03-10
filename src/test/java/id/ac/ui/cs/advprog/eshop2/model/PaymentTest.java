@@ -17,9 +17,9 @@ public class PaymentTest {
         this.payment.setPaymentId("eb5589f-1c39-460e-8860-71af6af92cd7");
         this.payment.setStatus(PaymentStatus.SUCCESS.getValue());
         this.payment.setPaymentData(
-            new HashMap<String, String>() {{
-                put("voucherCode", "ESHOP1234ABC5678");
-            }}
+                new HashMap<String, String>() {{
+                    put("voucherCode", "ESHOP1234ABC5678");
+                }}
         );
         this.payment.setMethod("VOUCHER");
     }
@@ -51,36 +51,12 @@ public class PaymentTest {
     }
 
     @Test
-    void testSetMethodUpdatesStatusToSuccess() {
-        this.payment.setPaymentData(new HashMap<String, String>() {{
-            put("voucherCode", "ESHOP1234ABC5678");
-        }});
-        this.payment.setMethod("VOUCHER");
-        assertEquals(PaymentStatus.SUCCESS.getValue(), this.payment.getStatus());
-    }
-
-    @Test
-    void testSetMethodUpdatesStatusToRejected() {
-        this.payment.setPaymentData(new HashMap<String, String>() {{
-            put("voucherCode", "INVALID");
-        }});
-        this.payment.setMethod("VOUCHER");
-        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
-    }
-
-    @Test
-    void testSetMethodUnknownMethodRejected() {
-        this.payment.setMethod("UNKNOWN_METHOD");
-        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
-    }
-
-    @Test
     void testGetStatusPayment() {
         assertEquals(PaymentStatus.SUCCESS.getValue(), this.payment.getStatus());
     }
 
     @Test
-    void testGetPaymentFalse() {
+    void testGetStatusPaymentFalse() {
         assertNotEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
     }
 
@@ -120,14 +96,48 @@ public class PaymentTest {
     }
 
     @Test
-    void testCreatePaymentSuccess() {
-        Payment payment1 = new Payment(
-                this.payment.getPaymentId(),
-                this.payment.getMethod(),
-                this.payment.getPaymentData()
+    void testCreatePaymentVoucherSuccess() {
+        Payment p = new Payment(
+                "id-1", "VOUCHER",
+                new HashMap<String, String>() {{ put("voucherCode", "ESHOP1234ABC5678"); }}
         );
-        assertEquals(PaymentStatus.SUCCESS.getValue(), payment1.getStatus());
-        assertEquals("VOUCHER", payment1.getMethod());
+        assertEquals(PaymentStatus.SUCCESS.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentVoucherNullCode() {
+        Payment p = new Payment(
+                "id-2", "VOUCHER",
+                new HashMap<String, String>() {{ put("voucherCode", null); }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentVoucherWrongLength() {
+        Payment p = new Payment(
+                "id-3", "VOUCHER",
+                new HashMap<String, String>() {{ put("voucherCode", "ESHOP123"); }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentVoucherNotStartWithESHOP() {
+        Payment p = new Payment(
+                "id-4", "VOUCHER",
+                new HashMap<String, String>() {{ put("voucherCode", "TOKO1234ABC5678X"); }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentVoucherWrongDigitCount() {
+        Payment p = new Payment(
+                "id-5", "VOUCHER",
+                new HashMap<String, String>() {{ put("voucherCode", "ESHOP1234ABCDEFG"); }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
     }
 
     @Test
@@ -135,12 +145,70 @@ public class PaymentTest {
         Payment payment1 = new Payment(
                 this.payment.getPaymentId(),
                 this.payment.getMethod(),
-                new HashMap<String, String>() {{
-                    put("voucherCode", "ESHOP1234ABC567a");
-                }}
+                new HashMap<String, String>() {{ put("voucherCode", "ESHOP1234ABC567a"); }}
         );
         assertEquals(PaymentStatus.REJECTED.getValue(), payment1.getStatus());
         assertEquals("VOUCHER", payment1.getMethod());
+    }
+
+    @Test
+    void testCreatePaymentCODSuccess() {
+        Payment p = new Payment(
+                "id-6", "CASH_ON_DELIVERY",
+                new HashMap<String, String>() {{
+                    put("address", "Jl. Merdeka No. 1");
+                    put("deliveryFee", "10000");
+                }}
+        );
+        assertEquals(PaymentStatus.SUCCESS.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentCODAddressNull() {
+        Payment p = new Payment(
+                "id-7", "CASH_ON_DELIVERY",
+                new HashMap<String, String>() {{
+                    put("address", null);
+                    put("deliveryFee", "10000");
+                }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentCODFeeNull() {
+        Payment p = new Payment(
+                "id-8", "CASH_ON_DELIVERY",
+                new HashMap<String, String>() {{
+                    put("address", "Jl. Merdeka No. 1");
+                    put("deliveryFee", null);
+                }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentCODAddressEmpty() {
+        Payment p = new Payment(
+                "id-9", "CASH_ON_DELIVERY",
+                new HashMap<String, String>() {{
+                    put("address", "");
+                    put("deliveryFee", "10000");
+                }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testCreatePaymentCODFeeEmpty() {
+        Payment p = new Payment(
+                "id-10", "CASH_ON_DELIVERY",
+                new HashMap<String, String>() {{
+                    put("address", "Jl. Merdeka No. 1");
+                    put("deliveryFee", "");
+                }}
+        );
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
     }
 
     @Test
@@ -159,11 +227,108 @@ public class PaymentTest {
 
     @Test
     void testCreatePaymentUnknownMethodRejected() {
-        Payment payment1 = new Payment(
-                "some-id",
-                "UNKNOWN_METHOD",
-                new HashMap<>()
-        );
-        assertEquals(PaymentStatus.REJECTED.getValue(), payment1.getStatus());
+        Payment p = new Payment("id-11", "UNKNOWN_METHOD", new HashMap<>());
+        assertEquals(PaymentStatus.REJECTED.getValue(), p.getStatus());
+    }
+
+    @Test
+    void testSetMethodVoucherSuccess() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("voucherCode", "ESHOP1234ABC5678");
+        }});
+        this.payment.setMethod("VOUCHER");
+        assertEquals(PaymentStatus.SUCCESS.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodVoucherNullRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("voucherCode", null);
+        }});
+        this.payment.setMethod("VOUCHER");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodVoucherWrongLengthRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("voucherCode", "ESHOP123");
+        }});
+        this.payment.setMethod("VOUCHER");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodVoucherNotStartESHOPRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("voucherCode", "TOKO1234ABC5678X");
+        }});
+        this.payment.setMethod("VOUCHER");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodVoucherWrongDigitRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("voucherCode", "ESHOP1234ABCDEFG");
+        }});
+        this.payment.setMethod("VOUCHER");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodCODSuccess() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("address", "Jl. Merdeka No. 1");
+            put("deliveryFee", "10000");
+        }});
+        this.payment.setMethod("CASH_ON_DELIVERY");
+        assertEquals(PaymentStatus.SUCCESS.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodCODAddressNullRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("address", null);
+            put("deliveryFee", "10000");
+        }});
+        this.payment.setMethod("CASH_ON_DELIVERY");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodCODFeeNullRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("address", "Jl. Merdeka No. 1");
+            put("deliveryFee", null);
+        }});
+        this.payment.setMethod("CASH_ON_DELIVERY");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodCODAddressEmptyRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("address", "");
+            put("deliveryFee", "10000");
+        }});
+        this.payment.setMethod("CASH_ON_DELIVERY");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodCODFeeEmptyRejected() {
+        this.payment.setPaymentData(new HashMap<String, String>() {{
+            put("address", "Jl. Merdeka No. 1");
+            put("deliveryFee", "");
+        }});
+        this.payment.setMethod("CASH_ON_DELIVERY");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
+    }
+
+    @Test
+    void testSetMethodUnknownRejected() {
+        this.payment.setMethod("UNKNOWN_METHOD");
+        assertEquals(PaymentStatus.REJECTED.getValue(), this.payment.getStatus());
     }
 }
