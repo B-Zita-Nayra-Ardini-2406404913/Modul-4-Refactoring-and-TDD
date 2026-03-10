@@ -65,23 +65,22 @@ class OrderServiceTest {
         Order order = orders.get(1);
         doReturn(order).when(orderRepository).findById(order.getId());
 
-        assertNull(orderService.createOrder(order));
+        assertThrows(IllegalStateException.class,
+                () -> orderService.createOrder(order));
         verify(orderRepository, times(0)).save(order);
     }
 
     @Test
     void testUpdateStatus() {
         Order order = orders.get(1);
-        Order newOrder = new Order(order.getId(), order.getProducts(), order.getOrderTime(),
-                order.getAuthor(), OrderStatus.SUCCESS.getValue());
         doReturn(order).when(orderRepository).findById(order.getId());
-        doReturn(newOrder).when(orderRepository).save(any(Order.class));
+        doReturn(order).when(orderRepository).save(order);
 
         Order result = orderService.updateStatus(order.getId(), OrderStatus.SUCCESS.getValue());
 
         assertEquals(order.getId(), result.getId());
         assertEquals(OrderStatus.SUCCESS.getValue(), result.getStatus());
-        verify(orderRepository, times(1)).save(any(Order.class));
+        verify(orderRepository, times(1)).save(order);
     }
 
     @Test

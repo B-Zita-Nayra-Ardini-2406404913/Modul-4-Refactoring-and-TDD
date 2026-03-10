@@ -14,21 +14,20 @@ public class OrderServiceImpl implements OrderService{
     private OrderRepository orderRepository;
     @Override
     public Order createOrder(Order order) {
-        if (orderRepository.findById(order.getId()) == null){
-            orderRepository.save(order);
-            return order;
+        if (orderRepository.findById(order.getId()) != null){
+            throw new IllegalStateException("Order already exists: " + order.getId());
         }
-        return null;
+        orderRepository.save(order);
+        return order;
     }
 
     @Override
     public Order updateStatus(String orderId, String status) {
         Order order = orderRepository.findById(orderId);
         if (order != null){
-            Order newOrder = new Order(order.getId(), order.getProducts(),
-                    order.getOrderTime(), order.getAuthor(), status);
+            order.setStatus(status);
             orderRepository.save(order);
-            return newOrder;
+            return order;
         } else {
             throw new NoSuchElementException();
         }
