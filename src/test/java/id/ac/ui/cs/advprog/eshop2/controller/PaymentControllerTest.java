@@ -1,4 +1,4 @@
-package id.ac.ui.cs.advprog.eshop2.functional;
+package id.ac.ui.cs.advprog.eshop2.controller;
 
 import id.ac.ui.cs.advprog.eshop2.controller.PaymentController;
 import id.ac.ui.cs.advprog.eshop2.enums.PaymentStatus;
@@ -130,7 +130,7 @@ public class PaymentControllerTest {
         String viewName = paymentController.setStatus(
                 payment.getPaymentId(), PaymentStatus.SUCCESS.getValue(), model);
 
-        assertEquals("redirect:/payment/admin/detail/" + payment.getPaymentId(), viewName);
+        assertEquals("redirect:/payment/admin/list", viewName);
         verify(paymentService, times(1)).setStatus(payment, PaymentStatus.SUCCESS.getValue());
     }
 
@@ -142,7 +142,7 @@ public class PaymentControllerTest {
         String viewName = paymentController.setStatus(
                 payment.getPaymentId(), PaymentStatus.REJECTED.getValue(), model);
 
-        assertEquals("redirect:/payment/admin/detail/" + payment.getPaymentId(), viewName);
+        assertEquals("redirect:/payment/admin/list", viewName);
         verify(paymentService, times(1)).setStatus(payment, PaymentStatus.REJECTED.getValue());
     }
 

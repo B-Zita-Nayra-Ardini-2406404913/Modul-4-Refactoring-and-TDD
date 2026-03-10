@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.eshop2.model.Order;
 import id.ac.ui.cs.advprog.eshop2.model.Product;
 import id.ac.ui.cs.advprog.eshop2.service.OrderService;
 import id.ac.ui.cs.advprog.eshop2.service.PaymentService;
+import id.ac.ui.cs.advprog.eshop2.service.ProductQueryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +35,9 @@ class OrderControllerTest {
     @Mock
     private Model model;
 
+    @Mock
+    private ProductQueryService productQueryService;
+
     private List<Order> orders;
     private Order order;
 
@@ -57,12 +61,14 @@ class OrderControllerTest {
 
     @Test
     void testCreateOrderPage_shouldReturnCorrectView() {
+        when(productQueryService.findAll()).thenReturn(new ArrayList<>());
         String viewName = orderController.createOrderPage(model);
         assertEquals("order/createOrder", viewName);
     }
 
     @Test
     void testCreateOrderPage_shouldNotReturnWrongView() {
+        when(productQueryService.findAll()).thenReturn(new ArrayList<>());
         String viewName = orderController.createOrderPage(model);
         assertNotEquals("order/history", viewName);
     }
@@ -150,4 +156,5 @@ class OrderControllerTest {
         assertEquals("order/payResult", viewName);
         verify(model, times(1)).addAttribute(eq("payment"), any());
     }
+
 }
