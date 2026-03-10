@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop2.model;
 
+import id.ac.ui.cs.advprog.eshop2.enums.PaymentStatus;
 import java.util.Map;
 
 public class Payment {
@@ -16,36 +17,32 @@ public class Payment {
         this.method = method;
         this.paymentData = paymentData;
 
-        if (method.equals("VOUCHER")){
+        if (method.equals("VOUCHER")) {
             String value = paymentData.get("voucherCode");
-            if (value == null || value.length() != 16 || !value.startsWith("ESHOP")){
-                this.status = "REJECTED";
+            if (value == null || value.length() != 16 || !value.startsWith("ESHOP")) {
+                this.status = PaymentStatus.REJECTED.getValue();
                 return;
             }
-
             int digitCount = 0;
             for (char c : value.toCharArray()) {
-                if (Character.isDigit(c)) {
-                    digitCount++;
-                }
+                if (Character.isDigit(c)) digitCount++;
             }
             if (digitCount != 8) {
-                this.status = "REJECTED";
+                this.status = PaymentStatus.REJECTED.getValue();
                 return;
             }
         } else if (method.equals("CASH_ON_DELIVERY")) {
             String value1 = paymentData.get("address");
             String value2 = paymentData.get("deliveryFee");
-
-            if (value1 == null || value2 == null || value1.isEmpty() || value2.isEmpty()){
-                this.status = "REJECTED";
+            if (value1 == null || value2 == null || value1.isEmpty() || value2.isEmpty()) {
+                this.status = PaymentStatus.REJECTED.getValue();
                 return;
             }
         } else {
-            this.status = "REJECTED";
+            this.status = PaymentStatus.REJECTED.getValue();
             return;
         }
-        this.status = "SUCCESS";
+        this.status = PaymentStatus.SUCCESS.getValue();
     }
 
     public String getPaymentId() {
@@ -63,36 +60,32 @@ public class Payment {
     public void setMethod(String method) {
         this.method = method;
 
-        if (method.equals("VOUCHER")){
+        if (method.equals("VOUCHER")) {
             String value = paymentData.get("voucherCode");
-            if (value == null || value.length() != 16 || !value.startsWith("ESHOP")){
-                this.status = "REJECTED";
+            if (value == null || value.length() != 16 || !value.startsWith("ESHOP")) {
+                this.status = PaymentStatus.REJECTED.getValue();
                 return;
             }
-
             int digitCount = 0;
             for (char c : value.toCharArray()) {
-                if (Character.isDigit(c)) {
-                    digitCount++;
-                }
+                if (Character.isDigit(c)) digitCount++;
             }
             if (digitCount != 8) {
-                this.status = "REJECTED";
+                this.status = PaymentStatus.REJECTED.getValue();
                 return;
             }
         } else if (method.equals("CASH_ON_DELIVERY")) {
             String value1 = paymentData.get("address");
             String value2 = paymentData.get("deliveryFee");
-
-            if (value1 == null || value2 == null || value1.isEmpty() || value2.isEmpty()){
-                this.status = "REJECTED";
+            if (value1 == null || value2 == null || value1.isEmpty() || value2.isEmpty()) {
+                this.status = PaymentStatus.REJECTED.getValue();
                 return;
             }
         } else {
-            this.status = "REJECTED";
+            this.status = PaymentStatus.REJECTED.getValue();
             return;
         }
-        this.status = "SUCCESS";
+        this.status = PaymentStatus.SUCCESS.getValue();
     }
 
     public String getStatus() {
@@ -100,10 +93,11 @@ public class Payment {
     }
 
     public void setStatus(String status) {
-        if (!status.equals("SUCCESS") && !status.equals("REJECTED")){
-            throw new IllegalArgumentException("Invalid status" + status);
+        if (PaymentStatus.contains(status)) {
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException("Invalid status: " + status);
         }
-        this.status = status;
     }
 
     public Map<String, String> getPaymentData() {
