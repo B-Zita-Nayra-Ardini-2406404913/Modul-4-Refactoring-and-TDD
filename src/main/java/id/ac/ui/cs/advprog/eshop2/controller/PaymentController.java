@@ -53,6 +53,6 @@ public class PaymentController {
                             Model model) {
         Payment payment = paymentService.getPayment(paymentId);
         paymentService.setStatus(payment, status);
-        return "redirect:/payment/admin/detail/" + paymentId;
+        return "redirect:/payment/admin/list";
     }
 }

@@ -48,13 +48,22 @@
     <h1 class="page-title">Payment Detail</h1>
 
     <div class="card">
-        <form th:action="@{/payment/detail}" method="get">
+        <div class="card">
             <div class="form-group">
                 <label for="paymentIdInput">Payment ID</label>
-                <input type="text" name="paymentId" id="paymentIdInput" placeholder="Enter payment ID">
+                <input type="text" id="paymentIdInput" placeholder="Enter payment ID">
             </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+            <button class="btn btn-primary" onclick="searchPayment()">Search</button>
+        </div>
+
+        <script>
+            function searchPayment() {
+                const id = document.getElementById('paymentIdInput').value.trim();
+                if (id) {
+                    window.location.href = '/payment/detail/' + id;
+                }
+            }
+        </script>
     </div>
 
     <div th:if="${payment}">

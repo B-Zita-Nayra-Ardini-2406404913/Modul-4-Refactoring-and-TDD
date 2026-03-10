@@ -147,13 +147,25 @@
     <h1 class="page-title">Create Order</h1>
 
     <div class="card">
-        <form th:action="@{/order/create}" th:object="${order}" method="post">
+        <form th:action="@{/order/create}" method="post">
             <div class="form-group">
                 <label for="authorInput">Author</label>
-                <input th:field="*{author}" type="text" id="authorInput" placeholder="Enter author name">
+                <input type="text" name="author" id="authorInput" placeholder="Enter author name">
+            </div>
+            <div class="form-group">
+                <label>Select Products</label>
+                <div th:each="product : ${products}" style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                    <input type="checkbox"
+                           th:value="${product.productId}"
+                           name="productIds"
+                           th:id="${product.productId}">
+                    <label th:for="${product.productId}"
+                           th:text="${product.productName + ' (qty: ' + product.productQuantity + ')'}">
+                    </label>
+                </div>
             </div>
             <div class="form-actions">
-                <a href="#" class="btn btn-secondary">Cancel</a>
+                <a th:href="@{/order/history}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary">Create Order</button>
             </div>
         </form>
