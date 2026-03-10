@@ -1,5 +1,6 @@
-package id.ac.ui.cs.advprog.eshop2.controller;
+package id.ac.ui.cs.advprog.eshop2.functional;
 
+import id.ac.ui.cs.advprog.eshop2.controller.PaymentController;
 import id.ac.ui.cs.advprog.eshop2.enums.PaymentStatus;
 import id.ac.ui.cs.advprog.eshop2.model.Payment;
 import id.ac.ui.cs.advprog.eshop2.service.PaymentService;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.ui.Model;
 
 import java.util.ArrayList;
@@ -18,9 +20,10 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @ExtendWith(MockitoExtension.class)
-public class PaymentControllerFunctionalTest {
+public class PaymentControllerTest {
 
     @InjectMocks
     private PaymentController paymentController;
@@ -39,7 +42,7 @@ public class PaymentControllerFunctionalTest {
         Map<String, String> voucherData = new HashMap<>();
         voucherData.put("voucherCode", "ESHOP1234ABC5678");
 
-        payment = new Payment("pay-1", "VOUCHER", voucherData);
+        payment = new Payment("pay-1", null, "VOUCHER", voucherData);
 
         Map<String, String> codData = new HashMap<>();
         codData.put("address", "Jl. Merdeka No. 1");
@@ -47,7 +50,7 @@ public class PaymentControllerFunctionalTest {
 
         payments = new ArrayList<>();
         payments.add(payment);
-        payments.add(new Payment("pay-2", "CASH_ON_DELIVERY", codData));
+        payments.add(new Payment("pay-2", null, "CASH_ON_DELIVERY", codData));
     }
 
     @Test

@@ -57,12 +57,9 @@ public class OrderController {
         Order order = orderService.findById(orderId);
 
         Map<String, String> paymentData = new HashMap<>();
-        if ("VOUCHER".equals(method)) {
-            paymentData.put("voucherCode", voucherCode);
-        } else if ("CASH_ON_DELIVERY".equals(method)) {
-            paymentData.put("address", address);
-            paymentData.put("deliveryFee", deliveryFee);
-        }
+        paymentData.put("voucherCode", voucherCode);
+        paymentData.put("address", address);
+        paymentData.put("deliveryFee", deliveryFee);
 
         Payment payment = paymentService.addPayment(order, method, paymentData);
         model.addAttribute("payment", payment);

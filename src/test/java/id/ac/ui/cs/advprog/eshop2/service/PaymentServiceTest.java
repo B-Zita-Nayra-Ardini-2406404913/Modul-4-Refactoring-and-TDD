@@ -177,4 +177,14 @@ public class PaymentServiceTest {
         List<Payment> results = paymentService.getAllPayments();
         assertTrue(results.isEmpty());
     }
+
+    @Test
+    void testSetStatusRejectedBranchCoverage() {
+        Payment payment = new Payment("pay-x", order, "VOUCHER", new HashMap<>());
+        doReturn(payment).when(paymentRepository).save(any(Payment.class));
+
+        paymentService.setStatus(payment, PaymentStatus.REJECTED.getValue());
+
+        assertEquals(OrderStatus.FAILED.getValue(), payment.getOrder().getStatus());
+    }
 }
